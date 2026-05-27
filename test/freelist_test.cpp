@@ -85,6 +85,9 @@ void run_test( void )
     for ( int i = 0; i != 4; ++i )
         nodes.insert( fl.template construct< threadsafe, bounded >() );
 
+    for ( dummy* d : nodes )
+        fl.template destruct< threadsafe >( d );
+
     if ( bounded )
         test_running.store( false );
 }
