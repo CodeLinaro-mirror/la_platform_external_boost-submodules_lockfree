@@ -148,6 +148,16 @@ struct freelist_tester
         allocated_nodes( 256 )
     {}
 
+    ~freelist_tester( void )
+    {
+        // Drain remaining nodes on abnormal exit (e.g., test abort, sanitizer stop)
+        dummy* node;
+        while ( allocated_nodes.pop( node ) ) {
+            working_set.erase( node );
+            fl.template destruct< true >( node );
+        }
+    }
+
     void run()
     {
         running = true;
