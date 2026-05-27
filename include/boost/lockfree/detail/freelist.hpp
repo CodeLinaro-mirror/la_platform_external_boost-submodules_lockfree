@@ -39,7 +39,7 @@ namespace boost { namespace lockfree { namespace detail {
 template < typename T, typename Alloc = std::allocator< T > >
 class alignas( cacheline_bytes ) freelist_stack : Alloc
 {
-    struct BOOST_MAY_ALIAS freelist_node
+    struct BOOST_MAY_ALIAS alignas( T ) freelist_node
     {
         tagged_ptr< freelist_node > next;
     };
@@ -405,7 +405,7 @@ struct runtime_sized_freelist_storage : boost::alignment::aligned_allocator_adap
 template < typename T, typename NodeStorage = runtime_sized_freelist_storage< T > >
 class fixed_size_freelist : NodeStorage
 {
-    struct BOOST_MAY_ALIAS freelist_node
+    struct BOOST_MAY_ALIAS alignas( T ) freelist_node
     {
         tagged_index next;
     };

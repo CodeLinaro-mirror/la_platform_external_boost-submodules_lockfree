@@ -112,11 +112,18 @@ void oom_test( void )
     const bool    bounded = true;
     freelist_type fl( std::allocator< int >(), 8 );
 
-    for ( int i = 0; i != 8; ++i )
-        fl.template construct< threadsafe, bounded >();
+    std::vector< dummy* > allocated_nodes;
+    for ( int i = 0; i != 8; ++i ) {
+        dummy* node = fl.template construct< threadsafe, bounded >();
+        allocated_nodes.push_back( node );
+    }
 
     dummy* allocated = fl.template construct< threadsafe, bounded >();
     BOOST_TEST_REQUIRE( allocated == (dummy*)NULL );
+
+    // Clean up allocated nodes
+    for ( dummy* node : allocated_nodes )
+        fl.template destruct< threadsafe >( node );
 }
 
 BOOST_AUTO_TEST_CASE( oom_tests )
